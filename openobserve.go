@@ -28,7 +28,15 @@ func (p *Pusher) pushLog(file string, timestamp string, content string, device s
 	req.SetBasicAuth(p.Email, p.Password)
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := http.DefaultClient.Do(req)
+	// Create a custom HTTP client with a timeout and keep-alive settings
+	customClient := &http.Client{
+		Timeout: time.Duration(p.Timeout) * time.Second, // Set the timeout
+		Transport: &http.Transport{
+			DisableKeepAlives: false, // Keep-alive is enabled
+		},
+	}
+
+	resp, err := customClient.Do(req)
 	if err != nil {
 		log.Fatal(err)
 	}
