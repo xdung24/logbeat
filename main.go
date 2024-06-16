@@ -7,6 +7,8 @@ import (
 	"github.com/radovskyb/watcher"
 )
 
+var password string
+
 func main() {
 	// Get the device name
 	var deviceName = getDevice()
@@ -25,7 +27,7 @@ func main() {
 	// Configure the pusher
 	p := &Pusher{
 		Email:    "xdung24@gmail.com",
-		Password: "1hn3O08WS7ZR65MU4d29",
+		Password: password,
 		Host:     "https://api.openobserve.ai:443",
 		Path:     "/api/dung_organization_20338_eul2VPBU0sHYNAe/default/_json",
 		Timeout:  15,
