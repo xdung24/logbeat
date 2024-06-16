@@ -14,7 +14,7 @@ type Pusher struct {
 	Password string
 	Host     string
 	Path     string
-	Timeout  int
+	Client   *http.Client
 }
 
 func (p *Pusher) pushLog(file string, timestamp string, content string, device string, port int) {
@@ -28,15 +28,7 @@ func (p *Pusher) pushLog(file string, timestamp string, content string, device s
 	req.SetBasicAuth(p.Email, p.Password)
 	req.Header.Set("Content-Type", "application/json")
 
-	// Create a custom HTTP client with a timeout and keep-alive settings
-	customClient := &http.Client{
-		Timeout: time.Duration(p.Timeout) * time.Second, // Set the timeout
-		Transport: &http.Transport{
-			DisableKeepAlives: false, // Keep-alive is enabled
-		},
-	}
-
-	resp, err := customClient.Do(req)
+	resp, err := p.Client.Do(req)
 	if err != nil {
 		log.Fatal(err)
 	}

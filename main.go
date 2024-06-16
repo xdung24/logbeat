@@ -4,7 +4,9 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
+	"time"
 
 	"github.com/radovskyb/watcher"
 )
@@ -39,13 +41,21 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	// Create a custom HTTP client with a timeout and keep-alive settings
+	customClient := &http.Client{
+		Timeout: time.Duration(15) * time.Second, // Set the timeout
+		Transport: &http.Transport{
+			DisableKeepAlives: false, // Keep-alive is enabled
+		},
+	}
+
 	// Configure the pusher
 	p := &Pusher{
 		Email:    "xdung24@gmail.com",
 		Password: password,
 		Host:     "https://api.openobserve.ai:443",
 		Path:     "/api/dung_organization_20338_eul2VPBU0sHYNAe/default/_json",
-		Timeout:  15,
+		Client:   customClient,
 	}
 
 	// Start the logbeat loop
