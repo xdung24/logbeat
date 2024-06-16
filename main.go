@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"log"
 	"os"
 
@@ -10,17 +12,30 @@ import (
 var password string
 
 func main() {
+	// Define a flag for the folder path
+	var folderPath string
+	flag.StringVar(&folderPath, "folder", `./logs/`, "Path to the folder to watch")
+
+	// Parse the flags
+	flag.Parse()
+
+	// Verify the folder path exists
+	if _, err := os.Stat(folderPath); os.IsNotExist(err) {
+		fmt.Println("No folder path provided. Usage:")
+		flag.Usage()
+		os.Exit(1)
+	}
+
 	// Get the device name
 	var deviceName = getDevice()
 
 	// Create a new file watcher.
 	w := watcher.New()
-	w.SetMaxEvents(1)
-	w.FilterOps(watcher.Write)
+	w.SetMaxEvents(1)          // Only allow one event to be processed at a time
+	w.FilterOps(watcher.Write) // Only watch for write events
 
 	// Watch a specific folder recursively for changes.
-	folder := `C:\Users\dung\EvonyBot\logs\`
-	if err := w.AddRecursive(folder); err != nil {
+	if err := w.AddRecursive(folderPath); err != nil {
 		log.Fatalln(err)
 	}
 
