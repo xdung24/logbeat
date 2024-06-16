@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type Pusher struct {
@@ -16,8 +17,10 @@ type Pusher struct {
 	Timeout  int
 }
 
-func (p *Pusher) pushLog(file string, time string, content string, device string, port int) {
-	data := fmt.Sprintf(`{"file":"%s", "time": "%s", "content": "%s", "port": %d, "device": "%s"}`, file, time, content, port, device)
+func (p *Pusher) pushLog(file string, timestamp string, content string, device string, port int) {
+	startTime := time.Now() // Record the start time
+
+	data := fmt.Sprintf(`{"file":"%s", "time": "%s", "content": "%s", "port": %d, "device": "%s"}`, file, timestamp, content, port, device)
 	req, err := http.NewRequest("POST", fmt.Sprintf(`%s%s`, p.Host, p.Path), strings.NewReader(data))
 	if err != nil {
 		log.Fatal(err)
@@ -34,5 +37,7 @@ func (p *Pusher) pushLog(file string, time string, content string, device string
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println(string(body))
+	endTime := time.Now()              // Record the end time
+	duration := endTime.Sub(startTime) // Calculate the duration
+	log.Printf("%s (%s)\n", string(body), duration)
 }
