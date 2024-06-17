@@ -12,7 +12,7 @@ import (
 	"github.com/radovskyb/watcher"
 )
 
-var password string
+var email, password string
 
 func main() {
 	// Define a flag for the folder path
@@ -34,7 +34,7 @@ func main() {
 
 	// Create a new file watcher.
 	w := watcher.New()
-	w.SetMaxEvents(1)          // Only allow one event to be processed at a time
+	w.SetMaxEvents(5)          // Only allow one event to be processed at a time
 	w.FilterOps(watcher.Write) // Only watch for write events
 
 	// Define a custom filter function
@@ -63,7 +63,7 @@ func main() {
 
 	// Configure the pusher
 	p := &Pusher{
-		Email:    "xdung24@gmail.com",
+		Email:    email,
 		Password: password,
 		Host:     "https://api.openobserve.ai:443",
 		Path:     "/api/dung_organization_20338_eul2VPBU0sHYNAe/default/_json",
