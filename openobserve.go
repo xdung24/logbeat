@@ -23,19 +23,23 @@ func (p *Pusher) pushLog(file string, timestamp string, content string, device s
 	data := fmt.Sprintf(`{"file":"%s", "time": "%s", "content": "%s", "port": %d, "device": "%s"}`, file, timestamp, content, port, device)
 	req, err := http.NewRequest("POST", fmt.Sprintf(`%s%s`, p.Host, p.Path), strings.NewReader(data))
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("Error creating request: %v", err)
+		return
 	}
+
 	req.SetBasicAuth(p.Email, p.Password)
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := p.Client.Do(req)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("Error sending request: %v", err)
+		return
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("Error reading response: %v", err)
+		return
 	}
 	endTime := time.Now()              // Record the end time
 	duration := endTime.Sub(startTime) // Calculate the duration

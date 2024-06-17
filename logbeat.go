@@ -37,9 +37,9 @@ func logbeatLoop(w *watcher.Watcher, p *Pusher, deviceName string) {
 					lastlines[event.Path] = lastLine
 				}
 			case err := <-w.Error:
-				log.Fatalln(err)
+				log.Println(err)
 			case <-w.Closed:
-				return
+				log.Println("Watcher closed")
 			}
 		}
 	}()
