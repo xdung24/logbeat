@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/radovskyb/watcher"
@@ -35,6 +36,17 @@ func main() {
 	w := watcher.New()
 	w.SetMaxEvents(1)          // Only allow one event to be processed at a time
 	w.FilterOps(watcher.Write) // Only watch for write events
+
+	// Define a custom filter function
+	logFileFilter := func(info os.FileInfo, fullPath string) error {
+		if strings.HasSuffix(info.Name(), ".log") {
+			return nil // Include the file
+		}
+		return watcher.ErrSkip // Skip the file
+	}
+
+	// Add the custom filter function to the watcher
+	w.AddFilterHook(logFileFilter)
 
 	// Watch a specific folder recursively for changes.
 	if err := w.AddRecursive(folderPath); err != nil {
