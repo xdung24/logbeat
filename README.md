@@ -23,7 +23,7 @@ At its core, LogBeat is built with the user in mind. From its intuitive setup pr
 Use the following command to build your application, replacing your_password_here with the actual password you want to embed:
 
 ``bash
-go build -ldflags "-X 'main.password=your_password_here'"
+go build -ldflags "-X 'main.email=your_email_here' -X 'main.password=your_password_here'"
 ``
 
 This command tells the Go compiler to set the password variable in the main package to your_password_here. The -o yourApp part specifies the output binary name (yourApp in this case).
