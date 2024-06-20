@@ -32,8 +32,10 @@ func logbeatLoop(w *watcher.Watcher, p *Pusher, deviceName string) {
 				// Push the log to the server
 				go func() {
 					timestamp, port, content := parseLog(lastLine)
-					log.Printf("Pushing: %s %s %s %d %s\n", event.Name(), timestamp, deviceName, port, content)
-					p.pushLog(event.Name(), timestamp, content, deviceName, port)
+					if timestamp != "" && content != "" {
+						log.Printf("Pushing: %s %s %s %d %s\n", event.Name(), timestamp, deviceName, port, content)
+						p.pushLog(event.Name(), timestamp, content, deviceName, port)
+					}
 				}()
 
 				// If the last line has changed
