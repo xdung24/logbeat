@@ -24,17 +24,15 @@ func logbeatLoop(w *watcher.Watcher, p *Pusher, deviceName string) {
 					continue
 				}
 
-				if strings.TrimSpace(lastLine) == "" {
-					continue
-				}
-
 				// Parse the last line
 				// Push the log to the server
 				go func() {
-					timestamp, port, content := parseLog(lastLine)
-					if timestamp != "" && content != "" {
-						log.Printf("Pushing: %s %s %s %d %s\n", event.Name(), timestamp, deviceName, port, content)
-						p.pushLog(event.Name(), timestamp, content, deviceName, port)
+					if strings.TrimSpace(lastLine) != "" {
+						timestamp, port, content := parseLog(lastLine)
+						if timestamp != "" && content != "" {
+							log.Printf("Pushing: %s %s %s %d %s\n", event.Name(), timestamp, deviceName, port, content)
+							p.pushLog(event.Name(), timestamp, content, deviceName, port)
+						}
 					}
 				}()
 
