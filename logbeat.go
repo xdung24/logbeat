@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"strings"
 	"time"
 
 	"github.com/radovskyb/watcher"
@@ -20,6 +21,10 @@ func logbeatLoop(w *watcher.Watcher, p *Pusher, deviceName string) {
 				lastLine, err := readLastLine(event.Path)
 				if err != nil {
 					log.Println(err)
+					continue
+				}
+
+				if strings.TrimSpace(lastLine) == "" {
 					continue
 				}
 
